@@ -1,0 +1,68 @@
+{
+  "name": "wattpure",
+  "version": "0.9.0",
+  "description": "Your Dyson fan follows your heart rate or power training zone, live.",
+  "keywords": [
+    "indoor-cycling",
+    "dyson",
+    "fan",
+    "cycling",
+    "heart-rate",
+    "power-meter",
+    "smart-trainer",
+    "bluetooth",
+    "ble"
+  ],
+  "homepage": "https://github.com/SiM07/wattpure#readme",
+  "bugs": {
+    "url": "https://github.com/SiM07/wattpure/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SiM07/wattpure.git"
+  },
+  "license": "MIT",
+  "author": "Simon Rolland",
+  "type": "module",
+  "bin": {
+    "wattpure": "./dist/src/main.js"
+  },
+  "files": [
+    "dist/src",
+    "dist/ui",
+    "!dist/**/*.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "start": "npm run build && node dist/src/main.js",
+    "demo": "npm run build && node dist/src/main.js --demo",
+    "sandbox": "npm run build && node dist/src/main.js --sandbox",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.ui.json --noEmit",
+    "lint": "oxlint",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "check": "npm run typecheck && npm run lint && npm test",
+    "icons": "node scripts/icons.ts",
+    "package": "npm run build && node scripts/package.ts",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "dependencies": {
+    "@stoprocent/noble": "^2.8.0",
+    "@webviewjs/webview": "^0.6.0",
+    "dbus-next": "^0.10.2",
+    "dyson-control": "^0.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "oxlint": "^1.93.0",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "node-gyp": "^13.1.0",
+    "xml2js": "^0.6.2"
+  }
+}

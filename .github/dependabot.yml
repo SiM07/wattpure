@@ -1,0 +1,34 @@
+# Dependency updates, once a month, grouped to keep the number of pull requests low.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+      prefix-development: deps-dev
+    ignore:
+      # @types/node follows the Node.js major pinned in .nvmrc.
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
+    groups:
+      # Tooling (TypeScript, oxlint, types): one pull request for all minor and patch updates.
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      # Runtime dependencies end up in the bundles: patches together, anything bigger on its own.
+      runtime-patches:
+        dependency-type: production
+        update-types: [patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']

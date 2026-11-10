@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # Native modules ship prebuilt binaries: install scripts are not needed.
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: node dist/src/main.js --version
+
+  package:
+    name: Package (Linux, Windows)
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run package -- --target linux-x64,win32-x64
+      - name: Smoke test the Linux bundle
+        run: |
+          mkdir smoke && tar -xzf release/wattpure-*-linux-x64.tar.gz -C smoke
+          smoke/wattpure/wattpure --version
+          smoke/wattpure/wattpure --help | head -3
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bundles
+          path: |
+            release/*.zip
+            release/*.tar.gz
+          retention-days: 7

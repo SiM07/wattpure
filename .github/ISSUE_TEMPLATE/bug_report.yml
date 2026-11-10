@@ -1,0 +1,36 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, what you saw (a screenshot of the app helps).
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: WattPure version
+      description: Settings › About, or `wattpure --version`.
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Windows, Linux]
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Sensor and fan
+      description: e.g. Garmin HRM-Pro + Dyson Purifier Hot+Cool HP07, Tacx Neo 2T + Dyson Pure Cool TP04
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: macOS `~/Library/Logs/wattpure.log`, Windows the minimized console window, Linux the terminal.
+      render: text

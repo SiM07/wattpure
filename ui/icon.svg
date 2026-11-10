@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="zones" x1="0" y1="47" x2="0" y2="5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#338CFF"/>
+      <stop offset="0.35" stop-color="#59BF59"/>
+      <stop offset="0.62" stop-color="#FFCC3F"/>
+      <stop offset="0.82" stop-color="#FF663A"/>
+      <stop offset="1" stop-color="#FF340C"/>
+    </linearGradient>
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a404d"/>
+      <stop offset="1" stop-color="#262a33"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFCC3F" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#FFCC3F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#14161c"/>
+  <circle cx="32" cy="29" r="26" fill="url(#glow)"/>
+  <path d="M24.5 46h15l2.5 10.5a1.8 1.8 0 0 1-1.75 2.2h-16.5a1.8 1.8 0 0 1-1.75-2.2z" fill="url(#base)"/>
+  <rect x="24" y="49" width="16" height="1" rx="0.5" fill="#ffffff" fill-opacity="0.14"/>
+  <rect x="19" y="5.5" width="26" height="42" rx="13" fill="none" stroke="#14161c" stroke-width="7.5"/>
+  <rect x="19" y="5.5" width="26" height="42" rx="13" fill="none" stroke="url(#zones)" stroke-width="5"/>
+  <path d="M34.8 14.5 26.6 27.3h5.6L29.6 39.5l8.3-13.2h-5.6z" fill="#eef0f4"/>
+</svg>

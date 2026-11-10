@@ -1,0 +1,63 @@
+name: Release
+
+# Push a tag matching the package.json version (e.g. `git tag v0.9.0 && git push --tags`)
+# to build the bundles and publish a GitHub release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.targets }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest # ad-hoc code signing needs macOS
+            targets: darwin-arm64,darwin-x64
+          - os: ubuntu-latest
+            targets: linux-x64,linux-arm64,win32-x64
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Check that the tag matches package.json
+        shell: bash
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm run package -- --target ${{ matrix.targets }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bundles-${{ matrix.os }}
+          path: |
+            release/*.zip
+            release/*.tar.gz
+            release/*.deb
+
+  publish:
+    name: Publish the release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: bundles-*
+          path: release
+          merge-multiple: true
+      - name: Checksums
+        run: cd release && sha256sum *.zip *.tar.gz *.deb > SHA256SUMS.txt
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes=$(awk -v v="${GITHUB_REF_NAME#v}" '$0 ~ "^## \\[?"v {p=1; next} /^## / {p=0} p' CHANGELOG.md)
+          gh release create "$GITHUB_REF_NAME" release/* --title "WattPure $GITHUB_REF_NAME" --notes "${notes:-See CHANGELOG.md}"
